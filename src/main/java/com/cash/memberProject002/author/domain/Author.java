@@ -1,36 +1,32 @@
 package com.cash.memberProject002.author.domain;
 
+import com.cash.memberProject002.Post.domain.Post;
+import com.cash.memberProject002.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @ToString
-public class Author {
+@Builder
+
+public class Author extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String name;
-    @Column(unique = true, nullable = false)
+    @NotNull
     private String email;
+    @NotNull
     private String password;
-    @CreatedDate
-    private LocalDateTime createdTime;
-    @UpdateTimestamp
-    private LocalDateTime updatedTime;
-
-    public Author(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-    }
+    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    List<Post> postList = new ArrayList<>();
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;

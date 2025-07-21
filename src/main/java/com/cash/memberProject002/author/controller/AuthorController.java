@@ -1,10 +1,9 @@
 package com.cash.memberProject002.author.controller;
 
-import com.cash.memberProject002.author.domain.Author;
 import com.cash.memberProject002.author.dto.AuthorCreateDto;
 import com.cash.memberProject002.author.dto.AuthorUpdatePwDto;
-import com.cash.memberProject002.common.CommonDto;
 import com.cash.memberProject002.author.service.AuthorService;
+import com.cash.memberProject002.common.CommonDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/author")
 @RequiredArgsConstructor
+@RequestMapping("/author")
 
 public class AuthorController {
     private final AuthorService authorService;
@@ -21,33 +20,60 @@ public class AuthorController {
     //    회원가입
     @PostMapping("/create")
     public ResponseEntity<?> save(@Valid @RequestBody AuthorCreateDto authorCreateDto) {
-        authorService.save(authorCreateDto);
-        return new ResponseEntity<>(new CommonDto("가입된 아이디 : ", HttpStatus.CREATED.value(), "가입 완료"), HttpStatus.CREATED);
+        authorService.create(authorCreateDto);
+        return new ResponseEntity<>(CommonDto.builder()
+                .result("OK")
+                .statusCode(HttpStatus.CREATED.value())
+                .statusMessage("회원가입 완료!")
+                .build(), HttpStatus.CREATED);
     }
 
-    //    회원전체조회
+    //    회원 전체 조회
     @GetMapping("/list")
     public ResponseEntity<?> findAll() {
         authorService.findAll();
-        return new ResponseEntity<>(new CommonDto("회원 리스트 입니다.", HttpStatus.CREATED.value(), "문구"), HttpStatus.CREATED);
+        return new ResponseEntity<>(CommonDto.builder()
+                .result("목록조회")
+                .statusCode(HttpStatus.FOUND.value())
+                .statusMessage("회원 전체 리스트입니다.")
+                .build(), HttpStatus.FOUND);
     }
 
-    //    회원단건조회 : 아이디
-    @GetMapping("/detail/{inputId}")
+    //    회원 단건 조회
+    @GetMapping("/list/{inputId}")
     public ResponseEntity<?> findById(@PathVariable Long inputId) {
         authorService.findById(inputId);
-        return new ResponseEntity<>(new CommonDto("상세 조회 완료", HttpStatus.CREATED.value(), "찾기 완료"), HttpStatus.CREATED);
+        return new ResponseEntity<>(CommonDto.builder()
+                .result("{inputId} 아이디 회원 조회")
+                .statusCode(HttpStatus.FOUND.value())
+                .statusMessage("{inputId} 회원 정보입니다.")
+                .build(), HttpStatus.FOUND);
     }
 
-    //    회원비밀번호수정
-    @PatchMapping("/updatepassword")
-    public void updatePassword(@RequestBody AuthorUpdatePwDto authorUpdatePwDto) {
+
+    //    이메일로 비밀번호 수정
+    @PatchMapping("/updatepw")
+    public ResponseEntity<?> updatePassword(AuthorUpdatePwDto authorUpdatePwDto) {
         authorService.updatePassword(authorUpdatePwDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(CommonDto.builder()
+                        .result("OK")
+                        .statusCode(HttpStatus.OK.value())
+                        .statusMessage("비밀번호 수정 완료")
+                        .build());
     }
 
-//    회원탈퇴
+    //    아이디로 회원 탈퇴
     @DeleteMapping("/delete/{inputId}")
-    public void delete(@PathVariable Long inputId) {
+    public ResponseEntity<?> delete(@PathVariable Long inputId) {
         authorService.delete(inputId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(CommonDto.builder()
+                        .result("OK")
+                        .statusCode(HttpStatus.OK.value())
+                        .statusMessage("삭제 완료")
+                        .build());
     }
+
 }

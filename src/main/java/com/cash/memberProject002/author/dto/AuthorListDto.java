@@ -14,12 +14,14 @@ import lombok.NoArgsConstructor;
 public class AuthorListDto {
     private String name;
     private String email;
-
+    private String password;
 
     public static AuthorListDto fromEntity(Author author) {
         return AuthorListDto.builder()
                 .name(author.getName())
                 .email(author.getEmail())
+                .password(author.getPassword())
                 .build();
     }
+
 }
