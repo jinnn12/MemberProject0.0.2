@@ -1,6 +1,9 @@
 package com.cash.memberProject002.author.controller;
 
+import com.cash.memberProject002.Auth.JwtTokenProvider;
+import com.cash.memberProject002.author.domain.Author;
 import com.cash.memberProject002.author.dto.AuthorCreateDto;
+import com.cash.memberProject002.author.dto.AuthorLoginDto;
 import com.cash.memberProject002.author.dto.AuthorUpdatePwDto;
 import com.cash.memberProject002.author.service.AuthorService;
 import com.cash.memberProject002.common.CommonDto;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 public class AuthorController {
     private final AuthorService authorService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     //    회원가입
     @PostMapping("/create")
@@ -76,4 +80,9 @@ public class AuthorController {
                         .build());
     }
 
+    @PostMapping("/doLogin")
+    public ResponseEntity<?> doLogin(@RequestBody AuthorLoginDto authorLoginDto) {
+        Author author = authorService.doLogin(authorLoginDto);
+        String token = jwtTokenProvider.
+    }
 }
