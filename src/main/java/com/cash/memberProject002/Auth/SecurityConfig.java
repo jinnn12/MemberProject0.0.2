@@ -23,6 +23,8 @@ import java.util.Arrays;
 
 public class SecurityConfig {
     private final JwtTokenFilter jwtTokenFilter;
+    private final JwtAuthenticationHandler jwtAuthenticationHandler;
+    private final JwtAuthorizationHandler jwtAuthorizationHandler;
 
     //    @Bean은 메서드 위에 붙여 Return 되는 객체를 싱글톤 객체로 생성한다.
 //    @Component는 클래스 위에 붙여 클래스자체를 싱글톤 객체로 생성한다.
@@ -40,7 +42,13 @@ public class SecurityConfig {
 //                세션 로그인 방식 비활성화 (세션 : stateful인데(인증값을 서버에서 가지고 있음) -> STATELESS로 설정했으니 토큰로그인 방식으로 하겠다)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                 token을 검증하고, token 검증을 통해 Authentication 객체 생성
-                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(e ->
+                        e.authenticationEntryPoint(jwtAuthenticationHandler)
+                                .accessDeniedHandler(jwtAuthorizationHandler)
+
+                )
+                .build(); // build()를 통해 HttpSecurity 타입 -> SecurityFilterChain 타입
 
     }
 

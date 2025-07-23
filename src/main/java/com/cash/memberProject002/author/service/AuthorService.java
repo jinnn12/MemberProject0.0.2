@@ -3,13 +3,11 @@ package com.cash.memberProject002.author.service;
 import com.cash.memberProject002.Post.domain.Post;
 import com.cash.memberProject002.Post.repository.PostRepository;
 import com.cash.memberProject002.author.domain.Author;
-import com.cash.memberProject002.author.dto.AuthorCreateDto;
-import com.cash.memberProject002.author.dto.AuthorDetailDto;
-import com.cash.memberProject002.author.dto.AuthorListDto;
-import com.cash.memberProject002.author.dto.AuthorUpdatePwDto;
+import com.cash.memberProject002.author.dto.*;
 import com.cash.memberProject002.author.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +20,7 @@ import java.util.stream.Collectors;
 public class AuthorService {
     private final AuthorRepository authorRepository;
     private final PostRepository postRepository;
+    private final PasswordEncoder passwordEncoder;
 
 //    public void create(AuthorCreateDto authorCreateDto) {
 //        if (authorRepository.findByEmail(authorCreateDto.getEmail()).isPresent()) {
@@ -76,6 +75,20 @@ public class AuthorService {
     public void delete(Long id) {
         Author author = authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("아이디가 없습니다."));
         authorRepository.delete(author);
+    }
+
+    public Author doLogin(AuthorLoginDto authorLoginDto) {
+        Optional<Author> optionalAuthor = authorRepository.findByEmail(authorLoginDto.getEmail());
+        boolean check = true;
+        if (!optionalAuthor.isPresent()) {
+            check = false;
+        } else if (!passwordEncoder.matches(authorLoginDto.getPassword(), optionalAuthor.get().getPassword())) {
+            check = false;
+        }
+        if (!check) {
+            throw new IllegalArgumentException("이메일이나 비밀번호가 일치하지 않습니다.");
+        }
+        return optionalAuthor.get();
     }
 
 }
