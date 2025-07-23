@@ -1,5 +1,7 @@
 package com.cash.memberProject002.author.service;
 
+import com.cash.memberProject002.Post.domain.Post;
+import com.cash.memberProject002.Post.repository.PostRepository;
 import com.cash.memberProject002.author.domain.Author;
 import com.cash.memberProject002.author.dto.AuthorCreateDto;
 import com.cash.memberProject002.author.dto.AuthorDetailDto;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class AuthorService {
     private final AuthorRepository authorRepository;
+    private final PostRepository postRepository;
 
 //    public void create(AuthorCreateDto authorCreateDto) {
 //        if (authorRepository.findByEmail(authorCreateDto.getEmail()).isPresent()) {
@@ -74,7 +77,5 @@ public class AuthorService {
         Author author = authorRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("아이디가 없습니다."));
         authorRepository.delete(author);
     }
-
-
 
 }

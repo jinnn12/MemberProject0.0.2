@@ -24,9 +24,11 @@ public class Author extends BaseTimeEntity {
     private String email;
     @NotNull
     private String password;
-    @OneToMany(mappedBy = "author", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @OneToMany(mappedBy = "author")
     @Builder.Default
     List<Post> postList = new ArrayList<>();
+
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;

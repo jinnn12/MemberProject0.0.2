@@ -30,7 +30,7 @@ public class AuthorDetailDto {
                 .name(author.getName())
                 .email(author.getEmail())
                 .password(author.getPassword())
-//                .postCount()
+                .postCount(author.getPostList().size())
                 .createdTime(author.getCreatedTime())
                 .build();
     }
