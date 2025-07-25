@@ -24,6 +24,7 @@ public class Author extends BaseTimeEntity {
     private String email;
     @NotNull
     private String password;
+    private String role;
 
     @OneToMany(mappedBy = "author")
     @Builder.Default
